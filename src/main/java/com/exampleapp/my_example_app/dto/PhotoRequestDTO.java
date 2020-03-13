@@ -1,4 +1,4 @@
-package com.exampleapp.my_example_app.dtos;
+package com.exampleapp.my_example_app.dto;
 
 import java.util.Objects;
 

@@ -1,6 +1,4 @@
-package com.exampleapp.my_example_app.dtos;
-
-import com.exampleapp.my_example_app.entities.PhotoEntity;
+package com.exampleapp.my_example_app.dto;
 
 import java.util.Objects;
 

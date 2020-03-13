@@ -1,8 +1,8 @@
-package com.exampleapp.my_example_app.service.impl;
+package com.exampleapp.my_example_app.service;
 
-import com.exampleapp.my_example_app.dtos.PhotoRequestDTO;
-import com.exampleapp.my_example_app.dtos.PhotoResponseDTO;
-import com.exampleapp.my_example_app.entities.PhotoEntity;
+import com.exampleapp.my_example_app.dto.PhotoRequestDTO;
+import com.exampleapp.my_example_app.dto.PhotoResponseDTO;
+import com.exampleapp.my_example_app.entity.PhotoEntity;
 import com.exampleapp.my_example_app.service.interfaces.Mapper;
 import org.springframework.stereotype.Component;
 

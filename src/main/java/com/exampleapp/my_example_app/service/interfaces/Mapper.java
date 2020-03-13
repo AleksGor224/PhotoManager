@@ -1,8 +1,8 @@
 package com.exampleapp.my_example_app.service.interfaces;
 
-import com.exampleapp.my_example_app.dtos.PhotoRequestDTO;
-import com.exampleapp.my_example_app.dtos.PhotoResponseDTO;
-import com.exampleapp.my_example_app.entities.PhotoEntity;
+import com.exampleapp.my_example_app.dto.PhotoRequestDTO;
+import com.exampleapp.my_example_app.dto.PhotoResponseDTO;
+import com.exampleapp.my_example_app.entity.PhotoEntity;
 
 public interface Mapper {
 

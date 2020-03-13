@@ -1,18 +1,21 @@
-package com.exampleapp.my_example_app.controller.impl;
+package com.exampleapp.my_example_app.controller;
 
 import com.exampleapp.my_example_app.controller.interfaces.PhotoController;
-import com.exampleapp.my_example_app.dtos.PhotoRequestDTO;
-import com.exampleapp.my_example_app.dtos.PhotoResponseDTO;
+import com.exampleapp.my_example_app.dto.PhotoRequestDTO;
+import com.exampleapp.my_example_app.dto.PhotoResponseDTO;
 import com.exampleapp.my_example_app.service.interfaces.PhotoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -56,8 +59,11 @@ public class PhotoControllerImpl implements PhotoController {
     }
 
     @Override
-    @GetMapping("download/{path}")
-    public ResponseEntity<PhotoResponseDTO> getPhoto(@PathVariable("path") String path){
-        return photoService.getPhoto(path);
+    @GetMapping("download/")
+    public ResponseEntity<BufferedImage> getPhoto(@RequestParam("path") String path){
+        BufferedImage img = photoService.getPhoto(path);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setCacheControl(CacheControl.noCache().getHeaderValue());
+        return new ResponseEntity<>(img, headers, HttpStatus.OK);
     }
 }

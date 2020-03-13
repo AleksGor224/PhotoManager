@@ -1,4 +1,4 @@
-package com.exampleapp.my_example_app.entities;
+package com.exampleapp.my_example_app.entity;
 
 import javax.persistence.*;
 import java.util.Objects;

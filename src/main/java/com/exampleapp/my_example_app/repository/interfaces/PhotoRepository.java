@@ -1,8 +1,6 @@
 package com.exampleapp.my_example_app.repository.interfaces;
 
-import com.exampleapp.my_example_app.dtos.PhotoRequestDTO;
-import com.exampleapp.my_example_app.dtos.PhotoResponseDTO;
-import com.exampleapp.my_example_app.entities.PhotoEntity;
+import com.exampleapp.my_example_app.entity.PhotoEntity;
 import org.springframework.http.ResponseEntity;
 
 import java.nio.file.Path;
@@ -13,5 +11,5 @@ public interface PhotoRepository {
     List<PhotoEntity> init(List<PhotoEntity> list);
     List<PhotoEntity> getAllPhotos();
     List<PhotoEntity> getAllPhotosFromAlbum(int album);
-    ResponseEntity<PhotoEntity> getPhoto(Path path);
+    byte[] getPhoto(Path path);
 }

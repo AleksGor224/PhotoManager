@@ -1,8 +1,8 @@
-package com.exampleapp.my_example_app.repository.impl;
+package com.exampleapp.my_example_app.repository;
 
-import com.exampleapp.my_example_app.dtos.PhotoRequestDTO;
-import com.exampleapp.my_example_app.entities.PhotoEntity;
+import com.exampleapp.my_example_app.entity.PhotoEntity;
 import com.exampleapp.my_example_app.repository.interfaces.PhotoRepository;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,29 +17,28 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.sql.DataSource;
+import javax.xml.crypto.Data;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
-import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class PhotoRepositoryImpl implements PhotoRepository {
 
     private final String ROOT_DIR = "src/images";
-    private final String IMAGE_MINI_DIR = "thumbnails";
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
-    DataSource source;
-
+    DataSource dataSource;
 
     @Override
     @Transactional(readOnly = false)
@@ -70,16 +69,20 @@ public class PhotoRepositoryImpl implements PhotoRepository {
                     file.createNewFile();
                 }
 
-
                 entity.setLocalPath(file.getAbsolutePath());
                 double bytes = file.length();
-                double kilobytes = (bytes / 1024);
-                entity.setFileSize((int) kilobytes);
+                entity.setFileSize((int)bytes);
                 entityManager.persist(entity);
             } catch (IOException e) {
                 System.out.println("Image was not saved. Caused by: " + e.getCause() + "\n" + e.getMessage());
             }
         }
+
+        return getAllPhotos();
+    }
+
+    @Override
+    public List<PhotoEntity> getAllPhotos() {
         Session session = (Session) entityManager.getDelegate();
         CriteriaBuilder cb = session.getCriteriaBuilder();
         CriteriaQuery<PhotoEntity> cq = cb.createQuery(PhotoEntity.class);
@@ -91,18 +94,22 @@ public class PhotoRepositoryImpl implements PhotoRepository {
     }
 
     @Override
-    public List<PhotoEntity> getAllPhotos() {
-        return null;
-    }
-
-    @Override
     public List<PhotoEntity> getAllPhotosFromAlbum(int album) {
-        return null;
+        return getAllPhotos().stream()
+                .filter((e)->album == e.getAlbumId())
+                .collect(Collectors.toList());
     }
 
     @Override
-    public ResponseEntity<PhotoEntity> getPhoto(Path path) {
-        return null;
+    public byte[] getPhoto(Path path) {
+        byte[] media = null;
+        try {
+            media = Files.readAllBytes(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(media);
+        return media;
     }
 
 }
