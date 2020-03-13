@@ -68,19 +68,13 @@ public class PhotoRepositoryImpl implements PhotoRepository {
 
                 if (!file.exists()) {
                     file.createNewFile();
-                    entity.setLocalPath(file.getPath());
-                    double bytes = file.length();
-                    double kilobytes = (bytes / 1024);
-                    entity.setFileSize((int) kilobytes);
                 }
 
-                ImageIO.write(imageBuf, array[1], file);
-                try (Connection connection = source.getConnection();
-                     Statement statement = connection.createStatement()) {
-                    statement.executeUpdate("CREATE TABLE IF NOT EXISTS photos(id int, album_id int, title text, url text, thumbnail_url text, download_date_time text,local_path text,file_size int)");
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+
+                entity.setLocalPath(file.getAbsolutePath());
+                double bytes = file.length();
+                double kilobytes = (bytes / 1024);
+                entity.setFileSize((int) kilobytes);
                 entityManager.persist(entity);
             } catch (IOException e) {
                 System.out.println("Image was not saved. Caused by: " + e.getCause() + "\n" + e.getMessage());
