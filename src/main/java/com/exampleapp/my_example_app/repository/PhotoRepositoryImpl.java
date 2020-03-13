@@ -2,20 +2,12 @@ package com.exampleapp.my_example_app.repository;
 
 import com.exampleapp.my_example_app.entity.PhotoEntity;
 import com.exampleapp.my_example_app.repository.interfaces.PhotoRepository;
-import com.exampleapp.my_example_app.repository.interfaces.PhotoRepositoryJPA;
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import javax.sql.DataSource;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,12 +27,17 @@ public class PhotoRepositoryImpl implements PhotoRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Autowired
-    DataSource dataSource;
 
-    @Autowired
-    PhotoRepositoryJPA photoRepositoryJPA;
-
+    /**
+     * Method added new PhotoEntities to our data base and save new pictures from object link to pic in local folder /src/pictures
+     * in folder with name of album number.
+     * <p>
+     * Response is List of All PhotoEntities
+     * Url photos/init
+     *
+     * @param list List of PhoneEntities
+     * @author AleksGor
+     */
     @Override
     public List<PhotoEntity> init(List<PhotoEntity> list) {
         for (PhotoEntity entity : list) {
@@ -80,9 +77,18 @@ public class PhotoRepositoryImpl implements PhotoRepository {
             }
         }
 
-        return photoRepositoryJPA.findAll();
+        return findAll();
     }
 
+    /**
+     * Method get PhotoEntities by album number
+     * <p>
+     * Response is byteArray of current picture
+     * Url photos/init
+     *
+     * @param path local Path of pictures. We can look him from request getAllPhotos
+     * @author AleksGor
+     */
 
     @Override
     public byte[] getPhoto(Path path) throws FileNotFoundException {
@@ -91,5 +97,37 @@ public class PhotoRepositoryImpl implements PhotoRepository {
         } catch (IOException e) {
             throw new FileNotFoundException("Picture was not found!");
         }
+    }
+
+    /**
+     * Method get PhotoEntities by album number via SpringDataJPA
+     * <p>
+     * Response is byteArray of current picture
+     * Url photos/init
+     *
+     * @param albumId Integer
+     * @author AleksGor
+     */
+    @Override
+    public List<PhotoEntity> findAllByAlbumId(int albumId) {
+        PhotoEntity photoEntity = entityManager.find(PhotoEntity.class, albumId);
+        List<PhotoEntity> list = findAll();
+        return list.stream().filter((entity) -> albumId == entity.getAlbumId())
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Method for getting all PhotoEntities from our data base via SpringDataJPA
+     * <p>
+     * <p>
+     * <p>
+     * Response is list of All PhotoEntities
+     * Url photos/all
+     *
+     * @author AleksGor
+     */
+    @Override
+    public List<PhotoEntity> findAll() {
+        return entityManager.createQuery("Select t from " + PhotoEntity.class.getSimpleName() + " t").getResultList();
     }
 }

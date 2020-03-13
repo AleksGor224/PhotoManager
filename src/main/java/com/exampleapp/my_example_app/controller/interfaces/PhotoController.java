@@ -12,7 +12,7 @@ public interface PhotoController {
     /**
      * Initialization endPoint of PhotoController. Used url of jsons from application.properties file.
      * Method send json data to service.
-     *
+     * <p>
      * Response is List of all PhotoEntities
      * Url photos/init
      *
@@ -22,7 +22,7 @@ public interface PhotoController {
 
     /**
      * Method for getting all PhotoEntities from our data base.
-     *
+     * <p>
      * Response is List of all PhotoEntities
      * Url photos/getAll
      *
@@ -32,23 +32,23 @@ public interface PhotoController {
 
     /**
      * Method for getting all PhotoEntities filtered by album ID from our data base.
-     *
+     * <p>
      * Response is List of all PhotoEntities filtered by album ID
      * Url photos/getAll/{albumID}
      *
-     * @author AleksGor
      * @param album Integer of album ID
+     * @author AleksGor
      */
     List<PhotoResponseDTO> getAllPhotosFromAlbum(int album);
 
     /**
      * Method for getting photo by local path from our backend
-     *
+     * <p>
      * Response ByteArrayResource in wrapper of ResponseEntity
      * Url photos/download?path=
      *
-     * @author AleksGor
      * @param path String of local path
+     * @author AleksGor
      */
     ResponseEntity<ByteArrayResource> getPhoto(String path) throws FileNotFoundException;
 }

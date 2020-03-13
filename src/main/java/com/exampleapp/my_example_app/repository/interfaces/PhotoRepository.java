@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.List;
 
-public interface PhotoRepository {
+public interface PhotoRepository extends PhotoRepositoryJPA{
 
     /**
      * Method added new PhotoEntities to our data base and save new pictures from object link to pic in local folder /src/pictures
