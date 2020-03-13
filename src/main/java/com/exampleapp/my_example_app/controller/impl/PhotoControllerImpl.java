@@ -7,9 +7,9 @@ import com.exampleapp.my_example_app.service.interfaces.PhotoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,17 +44,20 @@ public class PhotoControllerImpl implements PhotoController {
     }
 
     @Override
+    @GetMapping("all")
     public List<PhotoResponseDTO> getAllPhotos() {
-        return null;
+        return photoService.getAllPhotos();
     }
 
     @Override
-    public List<PhotoResponseDTO> getAllPhotosFromAlbum(int album) {
-        return null;
+    @GetMapping("all/{albumId}")
+    public List<PhotoResponseDTO> getAllPhotosFromAlbum(@PathVariable("albumId") int album) {
+        return photoService.getAllPhotosFromAlbum(album);
     }
 
     @Override
-    public ResponseEntity<PhotoResponseDTO> getPhoto(String path) {
-        return null;
+    @GetMapping("download/{path}")
+    public ResponseEntity<PhotoResponseDTO> getPhoto(@PathVariable("path") String path){
+        return photoService.getPhoto(path);
     }
 }
