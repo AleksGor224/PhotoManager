@@ -8,7 +8,7 @@ import java.util.List;
 public interface PhotoRepositoryJPA extends Repository<PhotoEntity,Integer> {
 
     /**
-     * Method get PhotoEntities by album number
+     * Method get PhotoEntities by album number via SpringDataJPA
      *
      * Response is byteArray of current picture
      * Url photos/init
@@ -19,7 +19,9 @@ public interface PhotoRepositoryJPA extends Repository<PhotoEntity,Integer> {
     List<PhotoEntity> findAllByAlbumId(int albumId);
 
     /**
-     * Method for getting all PhotoEntities from our data base
+     * Method for getting all PhotoEntities from our data base via SpringDataJPA
+     *
+     *
      *
      * Response is list of All PhotoEntities
      * Url photos/all
