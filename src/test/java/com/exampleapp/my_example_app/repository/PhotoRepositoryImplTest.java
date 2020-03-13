@@ -4,6 +4,7 @@ import com.exampleapp.my_example_app.dto.PhotoRequestDTO;
 import com.exampleapp.my_example_app.dto.PhotoResponseDTO;
 import com.exampleapp.my_example_app.entity.PhotoEntity;
 import com.exampleapp.my_example_app.repository.interfaces.PhotoRepository;
+import com.exampleapp.my_example_app.repository.interfaces.PhotoRepositoryJPA;
 import com.exampleapp.my_example_app.service.interfaces.Mapper;
 import com.exampleapp.my_example_app.service.interfaces.PhotoService;
 import org.junit.After;
@@ -29,6 +30,9 @@ class PhotoRepositoryImplTest {
 
     @MockBean
     PhotoRepository repository;
+
+    @MockBean
+    PhotoRepositoryJPA repositoryJPA;
 
     @Autowired
     PhotoService service;
@@ -65,7 +69,7 @@ class PhotoRepositoryImplTest {
     void getAllPhotos() {
         initialization();
 
-        Mockito.doReturn(listFromRepository).when(repository).getAllPhotos();
+        Mockito.doReturn(listFromRepository).when(repositoryJPA).findAll();
         List<PhotoResponseDTO> responseDTOS = service.getAllPhotos();
         assertNotNull(responseDTOS);
         assertNotNull(responseDTOS.get(0));
@@ -76,7 +80,7 @@ class PhotoRepositoryImplTest {
     void getAllPhotosFromAlbum() {
         initialization();
 
-        Mockito.doReturn(listFromRepository).when(repository).getAllPhotosFromAlbum(1);
+        Mockito.doReturn(listFromRepository).when(repositoryJPA).findAllByAlbumId(1);
         List<PhotoResponseDTO> responseDTOS = service.getAllPhotos();
         assertNotNull(responseDTOS);
 
@@ -86,7 +90,7 @@ class PhotoRepositoryImplTest {
     void getAllPhotosFromAlbumWithNotExistsAlbum() {
         initialization();
 
-        Mockito.doThrow(NullPointerException.class).when(repository).getAllPhotosFromAlbum(5);
+        Mockito.doThrow(NullPointerException.class).when(repositoryJPA).findAllByAlbumId(5);
         assertThrows(NullPointerException.class,()->service.init(null));
 
     }

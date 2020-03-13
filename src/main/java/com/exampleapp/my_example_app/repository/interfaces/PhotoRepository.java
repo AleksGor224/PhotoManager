@@ -21,27 +21,6 @@ public interface PhotoRepository {
     List<PhotoEntity> init(List<PhotoEntity> list);
 
     /**
-     * Method for getting all PhotoEntities from our data base
-     *
-     * Response is lisr of All PhotoEntities
-     * Url photos/all
-     *
-     * @author AleksGor
-     */
-    List<PhotoEntity> getAllPhotos();
-
-    /**
-     * Method get PhotoEntities by album number
-     *
-     * Response is List of all PhotoEntities filtered by album ID
-     * Url photos/init
-     *
-     * @param album Integer
-     * @author AleksGor
-     */
-    List<PhotoEntity> getAllPhotosFromAlbum(int album);
-
-    /**
      * Method get PhotoEntities by album number
      *
      * Response is byteArray of current picture

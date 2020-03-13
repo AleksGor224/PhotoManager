@@ -4,6 +4,7 @@ import com.exampleapp.my_example_app.dto.PhotoRequestDTO;
 import com.exampleapp.my_example_app.dto.PhotoResponseDTO;
 import com.exampleapp.my_example_app.entity.PhotoEntity;
 import com.exampleapp.my_example_app.repository.interfaces.PhotoRepository;
+import com.exampleapp.my_example_app.repository.interfaces.PhotoRepositoryJPA;
 import com.exampleapp.my_example_app.service.interfaces.Mapper;
 import com.exampleapp.my_example_app.service.interfaces.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Autowired
     PhotoRepository photoRepository;
+
+    @Autowired
+    PhotoRepositoryJPA photoRepositoryJPA;
 
     @Autowired
     Mapper mapper;
@@ -41,14 +45,14 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public List<PhotoResponseDTO> getAllPhotos() {
-        return photoRepository.getAllPhotos().stream()
+        return photoRepositoryJPA.findAll().stream()
                 .map((entity)->mapper.map(entity))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<PhotoResponseDTO> getAllPhotosFromAlbum(int album) {
-        return photoRepository.getAllPhotosFromAlbum(album).stream()
+        return photoRepositoryJPA.findAllByAlbumId(album).stream()
                 .map((entity)->mapper.map(entity))
                 .collect(Collectors.toList());
     }

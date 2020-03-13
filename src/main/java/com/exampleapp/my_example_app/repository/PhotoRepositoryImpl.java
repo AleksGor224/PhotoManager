@@ -2,6 +2,7 @@ package com.exampleapp.my_example_app.repository;
 
 import com.exampleapp.my_example_app.entity.PhotoEntity;
 import com.exampleapp.my_example_app.repository.interfaces.PhotoRepository;
+import com.exampleapp.my_example_app.repository.interfaces.PhotoRepositoryJPA;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -36,6 +37,9 @@ public class PhotoRepositoryImpl implements PhotoRepository {
 
     @Autowired
     DataSource dataSource;
+
+    @Autowired
+    PhotoRepositoryJPA photoRepositoryJPA;
 
     @Override
     public List<PhotoEntity> init(List<PhotoEntity> list) {
@@ -76,27 +80,9 @@ public class PhotoRepositoryImpl implements PhotoRepository {
             }
         }
 
-        return getAllPhotos();
+        return photoRepositoryJPA.findAll();
     }
 
-    @Override
-    public List<PhotoEntity> getAllPhotos() {
-        Session session = (Session) entityManager.getDelegate();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<PhotoEntity> cq = cb.createQuery(PhotoEntity.class);
-        Root<PhotoEntity> rootEntry = cq.from(PhotoEntity.class);
-        CriteriaQuery<PhotoEntity> all = cq.select(rootEntry);
-
-        TypedQuery<PhotoEntity> allQuery = session.createQuery(all);
-        return allQuery.getResultList();
-    }
-
-    @Override
-    public List<PhotoEntity> getAllPhotosFromAlbum(int album) {
-        return getAllPhotos().stream()
-                .filter((entity) -> album == entity.getAlbumId())
-                .collect(Collectors.toList());
-    }
 
     @Override
     public byte[] getPhoto(Path path) throws FileNotFoundException {
