@@ -10,11 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,33 +28,33 @@ public class PhotoServiceImpl implements PhotoService {
     @Override
     public List<PhotoResponseDTO> init(List<PhotoRequestDTO> list) {
         List<PhotoEntity> res = list.stream()
-                .map((e)-> {
-                    PhotoEntity tmp = mapper.map(e);
-                    tmp.setDownloadDateTime(LocalDateTime.now().toString());
-                    return tmp;
+                .map((dto)-> {
+                    PhotoEntity newEntity = mapper.map(dto);
+                    newEntity.setDownloadDateTime(LocalDateTime.now().toString());
+                    return newEntity;
                 })
                 .collect(Collectors.toList());
         return photoRepository.init(res).stream()
-                .map((e)->mapper.map(e))
+                .map((entity)->mapper.map(entity))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<PhotoResponseDTO> getAllPhotos() {
         return photoRepository.getAllPhotos().stream()
-                .map((e)->mapper.map(e))
+                .map((entity)->mapper.map(entity))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<PhotoResponseDTO> getAllPhotosFromAlbum(int album) {
         return photoRepository.getAllPhotosFromAlbum(album).stream()
-                .map((e)->mapper.map(e))
+                .map((entity)->mapper.map(entity))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ByteArrayResource getPhoto(String path) {
+    public ByteArrayResource getPhoto(String path) throws FileNotFoundException {
         Path tmp = Path.of(path);
         return new ByteArrayResource(photoRepository.getPhoto(tmp));
     }

@@ -2,10 +2,8 @@ package com.exampleapp.my_example_app.repository;
 
 import com.exampleapp.my_example_app.entity.PhotoEntity;
 import com.exampleapp.my_example_app.repository.interfaces.PhotoRepository;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,21 +15,18 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.sql.DataSource;
-import javax.xml.crypto.Data;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
+@Transactional(rollbackFor = Exception.class, readOnly = false)
 public class PhotoRepositoryImpl implements PhotoRepository {
 
     private final String ROOT_DIR = "src/images";
@@ -43,7 +38,6 @@ public class PhotoRepositoryImpl implements PhotoRepository {
     DataSource dataSource;
 
     @Override
-    @Transactional(readOnly = false)
     public List<PhotoEntity> init(List<PhotoEntity> list) {
         for (PhotoEntity entity : list) {
             try {
@@ -57,7 +51,8 @@ public class PhotoRepositoryImpl implements PhotoRepository {
 
                 File fileDir = new File(fileRootDir, String.valueOf(entity.getAlbumId()));
 
-                File file = new File(fileDir, array[0]+"."+array[1]);
+                if (array[1].equals("jfif")) array[1] = "jpg";
+                File file = new File(fileDir, array[0] + "." + array[1]);
 
                 if (!fileRootDir.isDirectory()) {
                     fileRootDir.mkdir();
@@ -74,10 +69,10 @@ public class PhotoRepositoryImpl implements PhotoRepository {
 
                 entity.setLocalPath(file.getAbsolutePath());
                 double bytes = file.length();
-                entity.setFileSize((int)bytes);
+                entity.setFileSize((int) bytes);
                 entityManager.persist(entity);
             } catch (IOException e) {
-                System.out.println("Image was not saved. Caused by: " + e.getCause() + "\n" + e.getMessage());
+                e.printStackTrace();
             }
         }
 
@@ -99,20 +94,16 @@ public class PhotoRepositoryImpl implements PhotoRepository {
     @Override
     public List<PhotoEntity> getAllPhotosFromAlbum(int album) {
         return getAllPhotos().stream()
-                .filter((e)->album == e.getAlbumId())
+                .filter((entity) -> album == entity.getAlbumId())
                 .collect(Collectors.toList());
     }
 
     @Override
-    public byte[] getPhoto(Path path) {
+    public byte[] getPhoto(Path path) throws FileNotFoundException {
         try {
-            byte[] media = Files.readAllBytes(path);
-            System.out.println(media.length);
-            return media;
+            return Files.readAllBytes(path);
         } catch (IOException e) {
-            System.out.println("Not success. Caused by: " + e.getCause() + "\n" + e.getMessage());
+            throw new FileNotFoundException("Picture was not found!");
         }
-        return null;
     }
-
 }

@@ -7,25 +7,17 @@ import java.util.Objects;
 @Table(name = "photos")
 public class PhotoEntity {
 
-    @Column(name = "albumId")
     private int albumId;
     @Id
-    @Column(name = "id")
     private int id;
-    @Column(name = "title")
     private String title;
-    @Column(name = "url")
     private String url;
-    @Column(name = "thumbnailUrl")
     private String thumbnailUrl;
-    @Column(name = "downloadDateTime")
     private String downloadDateTime;
-    @Column(name = "localPath")
     private String localPath;
-    @Column(name = "fileSize")
     private int fileSize;
 
-    public PhotoEntity() {
+    private PhotoEntity() {
     }
 
     public PhotoEntity(int albumId, int id, String title, String url, String thumbnailUrl, String downloadDateTime, String localPath, int fileSize) {
