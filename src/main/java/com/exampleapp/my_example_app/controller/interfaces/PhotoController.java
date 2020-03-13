@@ -1,6 +1,7 @@
 package com.exampleapp.my_example_app.controller.interfaces;
 
 import com.exampleapp.my_example_app.dto.PhotoResponseDTO;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 
 import java.awt.image.BufferedImage;
@@ -11,5 +12,5 @@ public interface PhotoController {
     List<PhotoResponseDTO> init();
     List<PhotoResponseDTO> getAllPhotos();
     List<PhotoResponseDTO> getAllPhotosFromAlbum(int album);
-    ResponseEntity<BufferedImage> getPhoto(String path);
+    ResponseEntity<ByteArrayResource> getPhoto(String path);
 }

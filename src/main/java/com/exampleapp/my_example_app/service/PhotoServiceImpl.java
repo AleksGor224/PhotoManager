@@ -7,8 +7,10 @@ import com.exampleapp.my_example_app.repository.interfaces.PhotoRepository;
 import com.exampleapp.my_example_app.service.interfaces.Mapper;
 import com.exampleapp.my_example_app.service.interfaces.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -56,20 +58,9 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public BufferedImage getPhoto(String path) {
+    public ByteArrayResource getPhoto(String path) {
         Path tmp = Path.of(path);
-        BufferedImage img = null;
-        byte[] arr = photoRepository.getPhoto(tmp);
-        ByteArrayInputStream bais = new ByteArrayInputStream(arr);
-        try {
-            img = ImageIO.read(bais);
-            System.out.println(img);
-            return img;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println(img);
-        return img;
+        return new ByteArrayResource(photoRepository.getPhoto(tmp));
     }
 
 

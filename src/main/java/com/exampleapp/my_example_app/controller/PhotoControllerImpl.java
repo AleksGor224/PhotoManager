@@ -7,10 +7,8 @@ import com.exampleapp.my_example_app.service.interfaces.PhotoService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.CacheControl;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
@@ -59,11 +57,11 @@ public class PhotoControllerImpl implements PhotoController {
     }
 
     @Override
-    @GetMapping("download/")
-    public ResponseEntity<BufferedImage> getPhoto(@RequestParam("path") String path){
-        BufferedImage img = photoService.getPhoto(path);
+    @GetMapping("download")
+    public ResponseEntity<ByteArrayResource> getPhoto(@RequestParam("path") String path){
+        ByteArrayResource bar = photoService.getPhoto(path);
         HttpHeaders headers = new HttpHeaders();
-        headers.setCacheControl(CacheControl.noCache().getHeaderValue());
-        return new ResponseEntity<>(img, headers, HttpStatus.OK);
+        System.out.println(bar.contentLength());
+        return ResponseEntity.ok().header(CacheControl.noCache().getHeaderValue()).contentType(MediaType.IMAGE_JPEG).contentLength(bar.contentLength()).body(bar);
     }
 }

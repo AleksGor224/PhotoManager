@@ -19,6 +19,7 @@ import javax.persistence.criteria.Root;
 import javax.sql.DataSource;
 import javax.xml.crypto.Data;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
@@ -26,6 +27,7 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +57,7 @@ public class PhotoRepositoryImpl implements PhotoRepository {
 
                 File fileDir = new File(fileRootDir, String.valueOf(entity.getAlbumId()));
 
-                File file = new File(fileDir, array[0]);
+                File file = new File(fileDir, array[0]+"."+array[1]);
 
                 if (!fileRootDir.isDirectory()) {
                     fileRootDir.mkdir();
@@ -67,6 +69,7 @@ public class PhotoRepositoryImpl implements PhotoRepository {
 
                 if (!file.exists()) {
                     file.createNewFile();
+                    ImageIO.write(imageBuf, array[1], file);
                 }
 
                 entity.setLocalPath(file.getAbsolutePath());
@@ -102,14 +105,14 @@ public class PhotoRepositoryImpl implements PhotoRepository {
 
     @Override
     public byte[] getPhoto(Path path) {
-        byte[] media = null;
         try {
-            media = Files.readAllBytes(path);
+            byte[] media = Files.readAllBytes(path);
+            System.out.println(media.length);
+            return media;
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Not success. Caused by: " + e.getCause() + "\n" + e.getMessage());
         }
-        System.out.println(media);
-        return media;
+        return null;
     }
 
 }
